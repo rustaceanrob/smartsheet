@@ -8,6 +8,6 @@ Smartsheet’s new client, BlackRock, uses a sheet to manage their new investmen
 
 ```markdown
 yarn
-cd backend && flask run
+cd backend && flask run -h localhost -p 5002
 cd .. && yarn dev
 ```
