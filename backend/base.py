@@ -128,7 +128,7 @@ def search():
 @app.route('/all_approved', methods=['GET'])
 def approved():
     sheet = smart_client.Sheets.get_sheet(id)
-    stocks =[]
+    stocks = []
     for row in sheet.rows:
         for cell in row.cells:
             if cell.value == True:
@@ -141,13 +141,30 @@ def approved():
 @app.route('/all', methods=['GET'])
 def all():
     sheet = smart_client.Sheets.get_sheet(id)
-    stocks =[]
+    stocks = []
     for row in sheet.rows:
         stock = []
         for cell in row.cells:
             stock.append(cell.value)
         stocks.append(stock)  
     return jsonify(stocks), 200
+
+@app.route('/discuss', methods=['POST'])
+def discuss():
+    sheet = smart_client.Sheets.get_sheet(id)
+    data = request.get_json()
+    if "symbol" in data and "comment" in data:
+        discussion = smartsheet.models.Discussion({
+                        'comment': smartsheet.models.Comment({
+                            'text': data['comment']
+                        })
+                    })
+        for row in sheet.rows:
+            for cell in row.cells:
+                if cell.value == data["symbol"]:
+                    smart_client.Discussions.create_discussion_on_row(id, row.id, discussion)                            
+                    return jsonify("Comment added"), 200
+    return jsonify("Failed to add comment"), 404
 
 if __name__ == '__main__':
    app.run(debug=True, port=5002)

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import Header from './Header'
 import axios from 'axios'
 import { CgSpinner } from 'react-icons/cg'
@@ -11,7 +11,11 @@ interface Asset {
   approved: boolean,
 }
 
-const Portfolio = () => {
+type Props = {
+  setSymbol: Dispatch<SetStateAction<string>>
+}
+
+const Portfolio = ({ setSymbol }: Props) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [portfolio, setPortfolio] = useState<Asset[]>([])
   const [approved, setApproved] = useState<boolean>(true)
@@ -108,10 +112,9 @@ const Portfolio = () => {
             </button>
           {
             portfolio.map((stock: Asset) => {
-              return <Stock symbol={stock.symbol} price={stock.price} risk={stock.risk} approved={stock.approved}/>
+              return <Stock symbol={stock.symbol} price={stock.price} risk={stock.risk} approved={stock.approved} setSymbol={setSymbol}/>
             })
           }
-          
         </div>}
       </div>
     </div>
